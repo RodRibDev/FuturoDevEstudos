@@ -7,7 +7,18 @@
 </head>
 <body>
     <script>
-        function consultarCEP() {
+   function consultarCEP() {
+            const enderecoSalvo = localStorage.getItem('endereco');
+
+            if (enderecoSalvo) {
+                const confirmacao = confirm("Já existe um endereço na base de dados. Deseja fazer uma nova consulta?");                
+       
+                if (!confirmacao) {                    
+                alert('Operação cancelada.');
+                return;
+                }
+            }
+        
             const cep = prompt("Digite o CEP apenas com números:");
             const apiUrl = `https://viacep.com.br/ws/${cep}/json`;
 
@@ -19,6 +30,14 @@
                     } else {
                         const enderecoFormatado = `${data.logradouro}, ${data.complemento} - ${data.bairro} - ${data.localidade}/${data.uf}`;
                         alert(enderecoFormatado);
+                        const confirmacao = confirm(`Os dados estavam corretos?`);
+                        
+                        if (confirmacao) {
+                            localStorage.setItem('endereco', JSON.stringify(data));
+                            alert('Endereço salvo no LocalStorage.');
+                        } else {
+                            alert('Dados não salvos.');
+                        }
                     }
                 })
                 .catch(error => {
